@@ -1,29 +1,36 @@
-use std::{fs::File, io::Read};
-fn readFromFile(filename: &str) -> [u8; 256]{
+use std::fs::File;
+use std::io::BufReader;
+use std::io::prelude::*;
+fn readFromFile(filename: &str) -> [usize; 256]{
     let mut memory = [0; 256];
     let mut counter = 0;
     let mut file = File::open(filename).unwrap();
-    let mut buffer = Vec::new();
-    file.read_to_end(&mut buffer).unwrap();
-    for i in 0..buffer.len() {
-        if buffer[i].split_whitespace().count() == 1 {
-            let pos = buffer[i].split_whitespace().next().unwrap().parse::<u8>().unwrap();
+    let buf_reader = BufReader::new(file);
+
+    for line in buf_reader.lines() {
+        let tmp = line.unwrap();
+        if tmp.split(" ").nth(0).unwrap() == "start" {
+            let pos = tmp.split(" ").nth(1).unwrap().parse::<usize>().unwrap();
             for j in counter..pos {
                 memory[j] = 0;
                 
             }
             counter = pos;
         }else{
-            memory[i] = buffer[i]
+            memory[counter] = tmp.split(" ").nth(1).unwrap().parse::<usize>().unwrap();
         }
-        }
+        counter += 1;
+    }
     memory
 }
 
 fn main() {
     // use 8 bit address space and make it safe for multi-threading
-    let mut addr = [0; 256];
-    addr[128] = 1;
+    let mut pc = 0;
+    let mut addr = readFromFile("memory.txt");
+
+    
+    /*addr[128] = 1;
     addr[129] = 1;
     addr[130] = 0;
     addr[131] = 0;
@@ -32,9 +39,9 @@ fn main() {
     addr[2] = 129;
     addr[3] = 130;
     addr[4] = 0x7;
-    addr[5] = 131;
+    addr[5] = 131; */
     
-    let mut pc = 0;
+    
     println!("pc: {}, addr: {:?}\n", pc, addr);
     loop {
         // fetch
