@@ -1,2 +1,2 @@
-# Creating a Chip 8 emulator for fun
+# Creating a small cpu emulator for fun
 cargo run --release
