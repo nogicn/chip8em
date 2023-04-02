@@ -9,15 +9,22 @@ fn readFromFile(filename: &str) -> [usize; 256]{
 
     for line in buf_reader.lines() {
         let tmp = line.unwrap();
+        println!("{}", tmp);
         if tmp.split(" ").nth(0).unwrap() == "start" {
             let pos = tmp.split(" ").nth(1).unwrap().parse::<usize>().unwrap();
-            for j in counter..pos {
+            for j in counter..=pos {
                 memory[j] = 0;
                 
             }
             counter = pos;
+            continue;
         }else{
-            memory[counter] = tmp.split(" ").nth(1).unwrap().parse::<usize>().unwrap();
+            // from string to hex to usize
+            if tmp.contains("x") {
+                memory[counter] = usize::from_str_radix(&tmp.split("x").nth(1).unwrap(), 16).unwrap();
+            }else{
+                memory[counter] = tmp.parse::<usize>().unwrap();
+            }
         }
         counter += 1;
     }
