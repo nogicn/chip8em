@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::io::BufReader;
 use std::io::prelude::*;
+
 fn read_from_file(filename: &str) -> [usize; 256]{
     let mut memory = [0; 256];
     let mut counter = 0;
@@ -32,22 +33,8 @@ fn read_from_file(filename: &str) -> [usize; 256]{
 }
 
 fn main() {
-    // use 8 bit address space and make it safe for multi-threading
     let mut pc = 0;
     let mut addr = read_from_file("memory.txt");
-
-    
-    /*addr[128] = 1;
-    addr[129] = 1;
-    addr[130] = 0;
-    addr[131] = 0;
-    addr[0] = 0x31;
-    addr[1] = 128;
-    addr[2] = 129;
-    addr[3] = 130;
-    addr[4] = 0x7;
-    addr[5] = 131; */
-    
     
     println!("pc: {}, addr: {:?}\n", pc, addr);
     loop {
