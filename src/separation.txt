@@ -1,3 +1,6 @@
 0-15 reg
-16-127 mempoint
-128-255 values
+16-127 prog
+128-255 mem
+
+0 - 0
+1 - pc

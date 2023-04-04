@@ -33,13 +33,17 @@ fn read_from_file(filename: &str) -> [usize; 256]{
 }
 
 fn main() {
-    let mut pc = 0;
-    let mut addr = read_from_file("memory.txt");
     
-    println!("pc: {}, addr: {:?}\n", pc, addr);
+    let mut addr = read_from_file("memory.txt");
+    // create pointer to memory
+    
+    
+    println!("addr: {:?}\n", addr);
     loop {
         // fetch
+        let mut pc = addr[1];
         let opcode = addr[pc];
+        
         match opcode {
             0x1 => {
                 // add
@@ -47,6 +51,15 @@ fn main() {
                 let b = addr[pc + 2];
                 let c = addr[pc + 3];
                 addr[c] = addr[a] + addr[b];
+                pc += 4;
+            }
+            0x11 => {
+                // add
+                let a = addr[pc + 1];
+                let b = addr[pc + 2];
+                let c = addr[pc + 3];
+                addr[c] = addr[a] + addr[b];
+                addr[b] = addr[c];
                 pc += 4;
             }
             0x2 => {
@@ -132,6 +145,8 @@ fn main() {
     }
         println!("pc: {}, addr: {:?}\n", pc, addr);
         // wait for 500 ms
-        std::thread::sleep(std::time::Duration::from_millis(500));
+        addr[1] = pc;
+        std::thread::sleep(std::time::Duration::from_millis(100));
+        
     }
 }
