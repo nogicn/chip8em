@@ -1,8 +1,10 @@
-start 0
+start 1
+16
+start 16
 fib 128 129 130
-jmp 1
+jmp 131
 start 128
 1
 1
 0
-0
+16
