@@ -80,15 +80,6 @@ fn main() {
                 addr[c] = addr[a] + addr[b];
                 pc += 4;
             }
-            0x11 => {
-                // add
-                let a = addr[pc + 1];
-                let b = addr[pc + 2];
-                let c = addr[pc + 3];
-                addr[c] = addr[a] + addr[b];
-                addr[b] = addr[c];
-                pc += 4;
-            }
             0x2 => {
                 // sub
                 let a = addr[pc + 1];
