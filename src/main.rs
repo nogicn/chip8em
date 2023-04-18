@@ -24,6 +24,8 @@ fn read_from_file(filename: &str) -> [usize; 256]{
 
     for line in buf_reader.lines() {
         let tmp = line.unwrap();
+        println!("{}", tmp);
+        
         if opcodes.contains_key(tmp.split(" ").nth(0).unwrap()) {
             for i in 0..tmp.split(" ").count() {
                 if i == 0 {
@@ -32,7 +34,7 @@ fn read_from_file(filename: &str) -> [usize; 256]{
                     continue;
                 }
                 else {
-                memory[counter] = tmp.split(" ").nth(i).unwrap().parse::<usize>().unwrap();
+                    memory[counter] = tmp.split(" ").nth(i).unwrap().parse::<usize>().unwrap();
                     counter += 1;
                 }
             }
