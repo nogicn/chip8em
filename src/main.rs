@@ -2,15 +2,42 @@ use std::fs::File;
 use std::io::BufReader;
 use std::io::prelude::*;
 
+
 fn read_from_file(filename: &str) -> [usize; 256]{
     let mut memory = [0; 256];
     let mut counter = 0;
-    let file = File::open(filename).unwrap();
-    let buf_reader = BufReader::new(file);
+
+    let mut opcodes = std::collections::HashMap::new();
+    opcodes.insert("add", 0x1);
+    opcodes.insert("sub", 0x2);
+    opcodes.insert("mul", 0x3);
+    opcodes.insert("fib", 0x31);
+    opcodes.insert("div", 0x4);
+    opcodes.insert("mod", 0x5);
+    opcodes.insert("mov", 0x6);
+    opcodes.insert("jmp", 0x7);
+    opcodes.insert("jz", 0x8);
+    opcodes.insert("jnz", 0x9);
+    opcodes.insert("end", 0x0);
+
+    let buf_reader = BufReader::new(File::open(filename).unwrap());    
 
     for line in buf_reader.lines() {
         let tmp = line.unwrap();
-        println!("{}", tmp);
+        if opcodes.contains_key(tmp.split(" ").nth(0).unwrap()) {
+            for i in 0..tmp.split(" ").count() {
+                if i == 0 {
+                    memory[counter] = opcodes[tmp.split(" ").nth(i).unwrap()];
+                    counter += 1;
+                    continue;
+                }
+                else {
+                memory[counter] = tmp.split(" ").nth(i).unwrap().parse::<usize>().unwrap();
+                    counter += 1;
+                }
+            }
+            continue;
+        }
         if tmp.split(" ").nth(0).unwrap() == "start" {
             let pos = tmp.split(" ").nth(1).unwrap().parse::<usize>().unwrap();
             for j in counter..=pos {
@@ -19,25 +46,18 @@ fn read_from_file(filename: &str) -> [usize; 256]{
             }
             counter = pos;
             continue;
-        }else{
-            // from string to hex to usize
-            if tmp.contains("x") {
-                memory[counter] = usize::from_str_radix(&tmp.split("x").nth(1).unwrap(), 16).unwrap();
-            }else{
-                memory[counter] = tmp.parse::<usize>().unwrap();
-            }
         }
+        memory[counter] = tmp.parse::<usize>().unwrap();
         counter += 1;
+     
     }
     memory
 }
 
 fn main() {
-    
-    let mut addr = read_from_file("memory.txt");
-    // create pointer to memory
-    
-    
+    let mut pc = 0;
+    let mut addr = read_from_file("write.txt");
+    // create dictionary for opcodes
     println!("addr: {:?}\n", addr);
     loop {
         // fetch
@@ -45,6 +65,12 @@ fn main() {
         let opcode = addr[pc];
         
         match opcode {
+            0x0=> {
+                // end
+                println!("pc: {}, addr: {:?}\n", pc, addr);
+                println!("program finished");
+                break;
+            }
             0x1 => {
                 // add
                 let a = addr[pc + 1];
@@ -141,8 +167,9 @@ fn main() {
                 println!("unknown opcode: {}", opcode);
                 println!("pc = {}", pc);
                 break;
+            }
         }
-    }
+   
         println!("pc: {}, addr: {:?}\n", pc, addr);
         // wait for 500 ms
         addr[1] = pc;
