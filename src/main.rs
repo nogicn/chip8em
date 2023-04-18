@@ -55,7 +55,6 @@ fn read_from_file(filename: &str) -> [usize; 256]{
 }
 
 fn main() {
-    let mut pc = 0;
     let mut addr = read_from_file("write.txt");
     // create dictionary for opcodes
     println!("addr: {:?}\n", addr);
